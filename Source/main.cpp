@@ -98,7 +98,13 @@ void smartCompilation(map<string, vector<string> > dependenceMap, string mainFil
 	//Link all objects into the desired executable
 	string trueTarget = "../" + target;
 	if(someObjectUpdated || !fileExist((trueTarget + ".exe").c_str())){
+		
+		#ifdef _WIN32
 		compilation += "-o " + trueTarget + " ";
+		#else	
+		compilation += "-o " + target + " ";
+		#endif
+
 		for(string object : generatedObjects){
 			compilation += object + ".o ";
 		}
@@ -122,7 +128,7 @@ int main(int argc, char ** argv){
 	
 	//Process Arguments
 	if(argc < 2){
-		printf("USAGE: %s SourceCode Flags\n", argv[0]);
+		printHelp();
 		exit(0);
 	}
 	
@@ -156,7 +162,7 @@ int main(int argc, char ** argv){
 		} else if(strcmp("-ex", argument) == 0|| strcmp("-export", argument) == 0){
 			exportProject = true;
 			beauty = true;
-		} else if(strcmp("-h", argument) == 0 || strcmp("-help", argument) == 0 || strcmp("-?", argument) == 0 || strcmp("?", argument) == 0 || strcmp("help", argument) == 0){
+		} else if(strcmp("-h", argument) == 0 || strcmp("-help", argument) == 0 || strcmp("-?", argument) == 0 || strcmp("?", argument) == 0 || strcmp("help", argument) == 0 || strcmp("--help", argument) == 0){
 			printHelp();
 		} else {
 			if(argv[i][0] != '-'){
